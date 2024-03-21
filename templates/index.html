@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự Đoán Đột Quỵ</title>
+    <!-- Bao gồm Bootstrap CSS từ CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Dự Đoán Đột Quỵ</h1>
+        <form action="/predict" method="post" class="row">
+            <!-- Cột Thứ Nhất -->
+            <div class="col-md-6">
+                <!-- Giới Tính -->
+                <div class="form-group">
+                    <label>Giới Tính:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="male" value="1" checked>
+                        <label class="form-check-label" for="male">Nam</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="female" value="0">
+                        <label class="form-check-label" for="female">Nữ</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" id="other" value="2">
+                        <label class="form-check-label" for="other">Khác</label>
+                    </div>
+                </div>
+                <!-- Tuổi -->
+                <div class="form-group">
+                    <label for="age">Tuổi:</label>
+                    <input type="number" class="form-control" name="age" required min="0" max="120" value="60">
+                </div>
+
+                <!-- Cao Huyết Áp -->
+                <div class="form-group">
+                    <label>Cao Huyết Áp:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hypertension" id="hypertension_no" value="0" checked>
+                        <label class="form-check-label" for="hypertension_no">Không</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="hypertension" id="hypertension_yes" value="1">
+                        <label class="form-check-label" for="hypertension_yes">Có</label>
+                    </div>
+                </div>
+
+                <!-- Bệnh Tim -->
+                <div class="form-group">
+                    <label>Bệnh Tim:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="heart_disease" id="heart_disease_no" value="0" checked>
+                        <label class="form-check-label" for="heart_disease_no">Không</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="heart_disease" id="heart_disease_yes" value="1">
+                        <label class="form-check-label" for="heart_disease_yes">Có</label>
+                    </div>
+                </div>
+
+                <!-- Đã Kết Hôn -->
+                <div class="form-group">
+                    <label>Đã Kết Hôn:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="ever_married" id="ever_married_yes" value="1" checked>
+                        <label class="form-check-label" for="ever_married_yes">Có</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="ever_married" id="ever_married_no" value="0">
+                        <label class="form-check-label" for="ever_married_no">Không</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột Thứ Hai -->
+            <div class="col-md-6">
+                <!-- Loại Công Việc -->
+                <div class="form-group">
+                    <label for="work_type">Loại Công Việc:</label>
+                    <select class="form-control" name="work_type">
+                        {% for option in work_type_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Loại Chỗ Ở -->
+                <div class="form-group">
+
+                    <label>Loại chỗ ở:</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="residence_type" id="residence_type_no" value="1" checked>
+                        <label class="form-check-label" for="residence_type_no">Đô thị</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="residence_type" id="residence_type_yes" value="0">
+                        <label class="form-check-label" for="residence_type_yes">Nông thôn</label>
+                    </div>
+                </div>
+
+                <!-- Mức Đường Huyết Trung Bình -->
+                <div class="form-group">
+                    <label for="avg_glucose_level">Mức Đường Huyết Trung Bình:</label>
+                    <input type="number" class="form-control" name="avg_glucose_level" step="0.01" required value="100" required min="0">
+                </div>
+
+                <!-- Chỉ Số Khối Cơ Thể (BMI) -->
+                <div class="form-group">
+                    <label for="bmi">Chỉ Số Khối Cơ Thể (BMI):</label>
+                    <input type="number" class="form-control" name="bmi" step="0.01" value="20" required min="0">
+                </div>
+
+                <!-- Tình Trạng Hút Thuốc -->
+                <div class="form-group">
+                    <label for="smoking_status">Tình Trạng Hút Thuốc:</label>
+                    <select class="form-control" name="smoking_status">
+                        {% for option in smoking_status_options %}
+                            <option value="{{ option }}">{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Nút Dự Đoán -->
+                <button type="submit" class="btn btn-primary btn-block mt-3">Dự Đoán</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal Kết Quả Dự Đoán -->
+    <div class="modal fade" id="predictionModal" tabindex="-1" role="dialog" aria-labelledby="predictionModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="predictionModalLabel">Kết Quả Dự Đoán</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Hiển thị kết quả dự đoán ở đây -->
+                    <p class="lead" id="predictionResult">Kết quả dự đoán sẽ được hiển thị ở đây.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bao gồm Bootstrap JS và Popper.js từ CDN (cần thiết cho các thành phần Bootstrap) -->
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function updatePredictionResult(result) {
+            document.getElementById('predictionResult').innerText = result;
+
+            // Hiển thị modal dự đoán
+            $('#predictionModal').modal('show');
+        }
+
+        // Xử lý việc gửi biểu mẫu
+        $('form').submit(function (event) {
+            event.preventDefault();
+
+            // Chuyển đổi dữ liệu biểu mẫu thành chuỗi
+            var formData = $(this).serialize();
+
+            // Thực hiện yêu cầu AJAX đến máy chủ Flask
+            $.ajax({
+                type: 'POST',
+                url: '/predict',
+                data: formData,
+                success: function (response) {
+                    updatePredictionResult(response.prediction);
+                },
+                error: function (error) {
+                    console.error('Lỗi:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
